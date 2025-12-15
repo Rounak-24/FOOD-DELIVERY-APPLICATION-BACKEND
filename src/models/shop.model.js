@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const aggregatePaginate = require('mongoose-aggregate-paginate-v2')
 require('dotenv').config()
 
 const shopSchema = new mongoose.Schema({
@@ -13,11 +14,18 @@ const shopSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"address"
     },
+
+    items:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"item"
+    }],
     
     rating:{type:Number, default:0},
     refreshToken:{type:String}
 
 },{timestamps:true});
+
+shopSchema.plugin(aggregatePaginate)
 
 shopSchema.pre('save',async function (){
     if(!this.isModified('password')) return;

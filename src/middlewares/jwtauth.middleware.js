@@ -10,7 +10,6 @@ const jwtAuthMiddleware = async (req,res,next)=>{
 
         const token = auth.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET_KEY);
-        console.log(decoded)
         let User;
 
         if(decoded.role==="user") User = await user.findById(decoded._id).select('-password -refreshToken')

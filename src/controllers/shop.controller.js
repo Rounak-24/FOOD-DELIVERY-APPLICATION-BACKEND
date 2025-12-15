@@ -188,12 +188,6 @@ const updateProfile = async(req,res)=>{
     }
 }
 
-const addItem = asynsHandler((req,res)=>{
-    const data = req.body
-    
-})
-
-
 module.exports = {
     registerShop,
     loginShop,

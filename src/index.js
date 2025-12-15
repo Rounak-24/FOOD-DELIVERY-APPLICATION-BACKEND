@@ -27,3 +27,6 @@ app.use('/user',userRoutes)
 
 const shopRoutes = require('./routes/shop.routes')
 app.use('/shop',shopRoutes)
+
+const itemRoutes = require('./routes/item.routes')
+app.use('/item',itemRoutes)
