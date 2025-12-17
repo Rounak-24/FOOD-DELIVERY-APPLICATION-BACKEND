@@ -10,10 +10,10 @@ const shopSchema = new mongoose.Schema({
     password:{type:String, required:true},
     email:{type:String},
 
-    address:{
+    address:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"address"
-    },
+    }],
 
     items:[{
         type:mongoose.Schema.Types.ObjectId,

@@ -3,7 +3,6 @@ const item = require('../models/item.model');
 const ApiError = require('../utils/ApiError');
 const ApiResponse = require('../utils/ApiResponse');
 const asyncHandler = require('../utils/asyncHandler');
-require('dotenv').config();
 
 const findItembyName = async (_id,itemname)=>{
     try{
@@ -70,7 +69,6 @@ const addItem = asyncHandler(async (req,res)=>{
         $push: {items:saveItem._id}
     })
     await currShop.save()
-
     res.status(200).json(new ApiResponse(200,saveItem,'Item Added')) 
 })
 

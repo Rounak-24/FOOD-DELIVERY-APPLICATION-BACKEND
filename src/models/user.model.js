@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const aggregatePaginate = require('mongoose-aggregate-paginate-v2');
 require('dotenv').config()
 
 const userSchema = new mongoose.Schema({
@@ -22,6 +23,8 @@ const userSchema = new mongoose.Schema({
     refreshToken:{type:String}
 
 },{timestamps:true});
+
+userSchema.plugin(aggregatePaginate)
 
 userSchema.pre('save', async function (){
     if(!this.isModified('password')) return;

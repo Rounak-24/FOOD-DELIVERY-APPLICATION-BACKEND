@@ -33,3 +33,6 @@ app.use('/shop',shopRoutes)
 
 const itemRoutes = require('./routes/item.routes')
 app.use('/item',itemRoutes)
+
+const addressRoutes = require('./routes/address.routes')
+app.use('/address',addressRoutes)
