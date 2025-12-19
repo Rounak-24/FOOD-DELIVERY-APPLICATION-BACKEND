@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
     content:{type:String},
-    rating:{type:Number},
+    images:[{
+        type:String
+    }],
+    rating:{type:Number, required:[true,`At least rating is required for review posting`]},
 
     user:{
         type:mongoose.Schema.Types.ObjectId,

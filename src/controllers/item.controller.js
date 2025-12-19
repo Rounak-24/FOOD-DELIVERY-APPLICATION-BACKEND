@@ -3,6 +3,9 @@ const item = require('../models/item.model');
 const ApiError = require('../utils/ApiError');
 const ApiResponse = require('../utils/ApiResponse');
 const asyncHandler = require('../utils/asyncHandler');
+const {
+    uploadOnCloudinary
+} = require('../utils/cloudinary')
 
 const findItembyName = async (_id,itemname)=>{
     try{
@@ -56,7 +59,6 @@ const addItem = asyncHandler(async (req,res)=>{
         new ApiError(400,`${itemname} already added to your shop`)
     )
 
-    const currShop = req.user
     const newItem = new item({
         itemname: itemname.toLowerCase().trim(),
         price: price,
@@ -68,7 +70,7 @@ const addItem = asyncHandler(async (req,res)=>{
     await shop.updateOne({_id:req.user?._id},{
         $push: {items:saveItem._id}
     })
-    await currShop.save()
+    await req.user.save()
     res.status(200).json(new ApiResponse(200,saveItem,'Item Added')) 
 })
 
@@ -164,11 +166,44 @@ const searchItembyName = asyncHandler(async (req,res)=>{
     )
 })
 
+const uploadItemImage = asyncHandler(async (req,res)=>{
+    const {itemId} = req.params
+
+    if(!req.files || !itemId) return res.status(400).json(
+        new ApiError(400,`No file or item is selected`)
+    )
+
+    const imageArr = req.files
+    const urlArr = []
+
+    if(imageArr.length){
+        for(const img of imageArr){
+
+            const currFilePath = img.path
+            const uploadImg = await uploadOnCloudinary(currFilePath)
+            const url = uploadImg.url
+
+            urlArr.push(url)
+        }
+    }
+
+    await item.updateOne({_id:itemId},{
+        $addToSet:{
+            images:{$each:urlArr}
+        }
+    })
+
+    return res.status(200).json(
+        new ApiResponse(200,urlArr,`Images added successfully`)
+    )
+})
+
 module.exports = {
     addItem,
     getItem,
     getAllItems,
     editItem,
     removeItem,
-    searchItembyName
+    searchItembyName,
+    uploadItemImage
 }

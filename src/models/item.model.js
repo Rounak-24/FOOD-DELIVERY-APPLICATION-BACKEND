@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const itemSchema = new mongoose.Schema({
     itemname:{type:String, required: true},
     description:{type:String},
-
+    images:[
+        {type:String}
+    ],
     price:{type:Number, required:[true,"price is required"]},
     available:{type:Number, default:1},
     sales:{type:Number, default:0},
