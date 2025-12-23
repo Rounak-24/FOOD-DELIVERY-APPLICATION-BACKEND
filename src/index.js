@@ -39,3 +39,6 @@ app.use('/item',itemRoutes)
 
 const addressRoutes = require('./routes/address.routes')
 app.use('/address',addressRoutes)
+
+const driverRoutes = require('./routes/driver.routes')
+app.use('/driver',driverRoutes)
