@@ -198,6 +198,50 @@ const uploadItemImage = asyncHandler(async (req,res)=>{
     )
 })
 
+const findItembyCourse = asyncHandler(async (req,res)=>{
+    const {courseType} = req.params
+    const data = await shop.aggregate([
+        {
+            $unwind: { path: '$items'}
+        },
+        {
+            $project: {
+                shopname:1,
+                items:1,
+                rating:1
+            }
+        },
+        {
+            $lookup: {
+                from: 'items',
+                localField: 'items',
+                foreignField: '_id',
+                as: 'result'
+            }
+        },
+        {
+            $unwind: { path: '$result' }
+        },
+        {
+            $project: {
+                'result.__v':0,
+                'result.sales':0,
+                'result._id':0,
+            }
+        },
+        {
+            $match: { 'result.courseType':courseType }
+        },
+        {
+            $sort: { rating: -1 }
+        }
+    ])
+
+    res.status(200).json(
+        new ApiResponse(200,data)
+    )
+})
+
 module.exports = {
     addItem,
     getItem,
@@ -205,5 +249,6 @@ module.exports = {
     editItem,
     removeItem,
     searchItembyName,
-    uploadItemImage
+    uploadItemImage,
+    findItembyCourse
 }

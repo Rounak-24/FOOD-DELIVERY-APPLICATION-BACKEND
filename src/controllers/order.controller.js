@@ -8,7 +8,7 @@ const asyncHandler = require('../utils/asyncHandler');
 
 const placeOrder = asyncHandler(async (req,res)=>{
     const {newOrderItemArr, totalPrice, orderAddress} = req.body
-    if(!newOrderItemArr ||!totalPrice || !orderAddress) return res.status(400).json(
+    if(!newOrderItemArr ||!totalPrice ||!orderAddress) return res.status(400).json(
         new ApiError(400,`OrderItems are required`)
     )
 
@@ -35,7 +35,20 @@ const getAllOrders = asyncHandler(async (req,res)=>{
     )
 })
 
+const cancelOrder = asyncHandler(async (req,res)=>{
+    const {orderId} = req.params;
+    const findOrder = await order.findById(orderId)
+
+    if(findOrder.status==="out for delivery") return res.status(400).json(
+        new ApiError(400,`Unable to delete order`)
+    )
+    else await order.findByIdAndDelete(orderId)
+
+    return res.status(200).json(new ApiResponse(200,null,`Order deleted successfully`))
+})
+
 module.exports = {
     placeOrder,
-    getAllOrders
+    getAllOrders,
+    cancelOrder
 }

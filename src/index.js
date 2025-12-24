@@ -45,3 +45,6 @@ app.use('/driver',driverRoutes)
 
 const orderRoutes = require('./routes/order.routes')
 app.use('/order',orderRoutes)
+
+const reviewRoutes = require('./routes/review.routes')
+app.use('/review',reviewRoutes)

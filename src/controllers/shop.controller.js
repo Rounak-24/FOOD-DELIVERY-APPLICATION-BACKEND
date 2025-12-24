@@ -1,7 +1,8 @@
 const ApiError = require('../utils/ApiError')
 const ApiResponse = require('../utils/ApiResponse')
-const shop = require('../models/shop.model');
-const asyncHandler = require('../utils/asyncHandler');
+const shop = require('../models/shop.model')
+const review = require('../models/review.model')
+const asyncHandler = require('../utils/asyncHandler')
 
 const searchShopbyName = asyncHandler(async (req,res)=>{
     const shopNameForSearching = req.params.shopNameForSearching.toLowerCase().replaceAll("-"," ").trim()
@@ -44,6 +45,15 @@ const searchShopbyName = asyncHandler(async (req,res)=>{
     )
 })
 
+const getAllShopReviews = asyncHandler(async (req,res)=>{
+    const allReviews = await review.find({shop:req.user?._id},{
+        user:0, shop:0
+    })
+
+    return res.status(200).json(new ApiResponse(200,allReviews))
+})
+
 module.exports = {
-    searchShopbyName
+    searchShopbyName,
+    getAllShopReviews
 }
