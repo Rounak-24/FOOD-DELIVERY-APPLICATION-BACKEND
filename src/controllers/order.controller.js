@@ -47,8 +47,55 @@ const cancelOrder = asyncHandler(async (req,res)=>{
     return res.status(200).json(new ApiResponse(200,null,`Order deleted successfully`))
 })
 
+const getAllShopOrders = asyncHandler(async (req,res)=>{
+    const data = await order.aggregate([
+        {
+            $unwind: { path: '$orderItems'}
+        },
+        {
+            $lookup: {
+                from: 'items',
+                localField: 'orderItems.item',
+                foreignField: '_id',
+                as: 'itemData'
+            }
+        },
+        {
+            $unwind: { path: '$itemData'}
+        },
+        {
+            $lookup: {
+                from: 'shops',
+                localField: 'itemData._id',
+                foreignField: 'items',
+                as: 'tempShopData'
+            }
+        },
+        {
+            $unwind: { path: '$tempShopData'}
+        },
+        {
+            $match: { 'tempShopData._id':req.user?._id }
+        },
+        {
+            $project: {
+                address:0,
+                __v:0,
+                tempShopData:0,
+                customer:0,
+                'itemData._id':0
+            }
+        }
+    ])
+
+    res.status(200).json(
+        new ApiResponse(200,data)
+    )
+})
+
 module.exports = {
     placeOrder,
     getAllOrders,
-    cancelOrder
+    cancelOrder,
+    getAllShopOrders
 }
