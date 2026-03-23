@@ -11,7 +11,8 @@ const {
     removeItem,
     searchItembyName,
     uploadItemImage,
-    findItembyCourse
+    findItembyCourse,
+    getTopRatedItems
 } = require('../controllers/item.controller')
 
 router.post('/add-item',jwtAuthMiddleware,addItem)
@@ -21,7 +22,7 @@ router.patch('/edit-item',jwtAuthMiddleware,editItem)
 router.delete('/remove-item/:_id',jwtAuthMiddleware,removeItem)
 router.get('/search-item/:itemNameForSearch',searchItembyName)
 router.get('/:findItembyCourse',findItembyCourse)
-
+router.get('/top-rated-items',getTopRatedItems)
 router.put('/add-item-image/:itemId',jwtAuthMiddleware,upload.array("images", 5),uploadItemImage)
 
 module.exports = router

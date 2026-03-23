@@ -242,6 +242,36 @@ const findItembyCourse = asyncHandler(async (req,res)=>{
     )
 })
 
+const getTopRatedItems = asyncHandler(async (req,res)=>{
+    const data = await shop.aggregate([
+        {
+            $unwind: { path: '$items' }
+        },
+        {
+            $lookup: {
+                from: 'items',
+                localField: 'items',
+                foreignField: '_id',
+                as: 'itemDetails'
+            }
+        },
+        {
+            $project: {
+                shopname:1,
+                rating:1,
+                itemDetails:1
+            }
+        },
+        {
+            $sort: { rating: -1 }
+        }
+    ])
+
+    return res.status(200).json(
+        new ApiResponse(200,data,'Top rated items has been fetched')
+    )
+})
+
 module.exports = {
     addItem,
     getItem,
@@ -250,5 +280,6 @@ module.exports = {
     removeItem,
     searchItembyName,
     uploadItemImage,
-    findItembyCourse
+    findItembyCourse,
+    getTopRatedItems
 }
